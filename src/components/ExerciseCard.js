@@ -10,6 +10,7 @@ import Typography from '@material-ui/core/Typography';
 import Avatar from '@material-ui/core/Avatar';
 import Chip from '@material-ui/core/Chip';
 import DoneIcon from '@material-ui/icons/Done';
+import { BrowserRouter as Router, Link } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -37,6 +38,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function SimpleCard({
+    id,
     title,
     tags,
 }) {
@@ -44,35 +46,37 @@ export default function SimpleCard({
     const bull = <span className={classes.bullet}>•</span>;
 
     return (
-        <Card className={classes.root}>
-            <CardContent>
-                <Typography className={classes.title} color="textSecondary" gutterBottom>
-                    {title}
-                </Typography>
-                <Typography variant="h5" component="h2">
-                    be{bull}nev{bull}o{bull}lent
-                </Typography>
-                <Typography className={clsx(classes.pos, classes.tagsContainer)} color="textSecondary">
-                    {_.map(tags, (tag) => <Chip
-                        avatar={<Avatar>tag[0].toUpperCase()</Avatar>}
-                        label={tag}
-                        size="small"
-                        clickable
-                        color="primary"
-                        onDelete={() => {}}
-                        deleteIcon={<DoneIcon />}
-                        variant="outlined"
-                    />)}
-                </Typography>
-                <Typography variant="body2" component="p">
-                    well meaning and kindly.
-                    <br/>
-                    {'"a benevolent smile"'}
-                </Typography>
-            </CardContent>
-            <CardActions>
-                <Button size="small">Learn More</Button>
-            </CardActions>
-        </Card>
+        <Link to={`/exercise/${id}`} style={{ textDecoration: 'none' }}>
+            <Card className={classes.root}>
+                <CardContent>
+                    <Typography className={classes.title} color="textSecondary" gutterBottom>
+                        {title}
+                    </Typography>
+                    <Typography variant="h5" component="h2">
+                            be{bull}nev{bull}o{bull}lent
+                    </Typography>
+                    <Typography className={clsx(classes.pos, classes.tagsContainer)} color="textSecondary">
+                        {_.map(tags, (tag, index) => <Chip
+                            key={index}
+                            avatar={<Avatar>tag[0].toUpperCase()</Avatar>}
+                            label={tag}
+                            size="small"
+                            color="primary"
+                            onDelete={() => {}}
+                            deleteIcon={<DoneIcon />}
+                            variant="outlined"
+                        />)}
+                    </Typography>
+                    <Typography variant="body2" component="p">
+                            well meaning and kindly.
+                        <br/>
+                        {'"a benevolent smile"'}
+                    </Typography>
+                </CardContent>
+                <CardActions>
+                    <Button size="small">Learn More</Button>
+                </CardActions>
+            </Card>
+        </Link>
     );
 }

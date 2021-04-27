@@ -11,11 +11,11 @@ export class HttpConnectorService {
 
     setupClient(config) {
         this.apolloClient = new ApolloClient({
-            uri: env.BACKEND_URL,
+            uri: window?.env?.BACKEND_URL,
             cache: new InMemoryCache(),
         });
         this.axios = axios.create({
-            baseURL: env.BACKEND_URL,
+            baseURL: window?.env?.BACKEND_URL,
         });
     }
 
