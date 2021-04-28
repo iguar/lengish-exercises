@@ -7,6 +7,7 @@ import { useParams } from 'react-router-dom';
 import {
     Button, makeStyles, Paper, TextField,
 } from '@material-ui/core';
+import Typography from '@material-ui/core/Typography';
 import MobileContext from '../contexts/MobileContext';
 import ExercisesHttpService from '../services/ExercisesHttpService';
 
@@ -35,6 +36,11 @@ const useStyles = makeStyles((theme) => ({
         fontStyle: 'italic',
         color: 'green',
     },
+    validAnswer: {
+        fontStyle: 'italic',
+        color: 'green',
+        fontWeight: 'bold',
+    },
 }));
 
 const ExercisePage = () => {
@@ -46,19 +52,18 @@ const ExercisePage = () => {
     const [exercise, setExercise] = useState();
 
     const [tasks, setTasks] = useState([]);
+    const [checkedTasks, setCheckedTasks] = useState([]);
 
     const checkAnswers = useCallback(() => {
-        setTasks((currentState) => {
-            const checkedTasks = _.chain(currentState)
-                .map((t) => ({
-                    ...t,
-                    isValid: _.toLower(t.answer) === _.toLower(t.userAnswer),
-                }))
-                .value();
+        const checkedTasksArray = _.chain(tasks)
+            .map((t) => ({
+                ...t,
+                isValid: _.toLower(t.answer) === _.toLower(t.userAnswer),
+            }))
+            .value();
 
-            return checkedTasks;
-        });
-    }, []);
+        setCheckedTasks(checkedTasksArray);
+    }, [tasks]);
 
     const onAnswerChange = useCallback(({
         uuid,
@@ -101,6 +106,14 @@ const ExercisePage = () => {
                         },
                     });
 
+                    const validTask = _.chain(checkedTasks)
+                        .find((t) => t.uuid === uuid && t.isValid)
+                        .value();
+
+                    if (validTask) {
+                        return <span className={classes.validAnswer}>{validTask.userAnswer}</span>;
+                    }
+
                     return <TextField
                         classes={{
                             root: classes.textField,
@@ -119,7 +132,7 @@ const ExercisePage = () => {
             }
         });
         return <p>{splitLine}</p>;
-    }, [addTask]);
+    }, [addTask, checkedTasks]);
 
     const renderedBody = useMemo(() => _.chain(exercise)
         .get('body')
