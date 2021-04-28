@@ -9,6 +9,8 @@ import MobileContext from './contexts/MobileContext';
 import Header from './components/Header/Header';
 import HomePage from './pages/HomePage';
 import ExercisePage from './pages/ExercisePage';
+import AdminPage from './pages/AdminPage';
+import ExerciseEditPage from './pages/admin/ExerciseEditPage';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -47,10 +49,13 @@ const App = () => {
                 <Header/>
 
                 <Switch>
+                    <Route path="/admin/exercise/:id">
+                        <ExerciseEditPage/>
+                    </Route>
                     {/* If the current URL is /about, this route is rendered
                 while the rest are ignored */}
-                    <Route path="/about">
-                        <div>About</div>
+                    <Route path="/admin">
+                        <AdminPage />
                     </Route>
 
                     {/* Note how these two routes are ordered. The more specific

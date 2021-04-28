@@ -41,12 +41,13 @@ export default function SimpleCard({
     id,
     title,
     tags,
+    admin,
 }) {
     const classes = useStyles();
     const bull = <span className={classes.bullet}>•</span>;
 
     return (
-        <Link to={`/exercise/${id}`} style={{ textDecoration: 'none' }}>
+        <Link to={`${admin ? '/admin' : ''}/exercise/${id}`} style={{ textDecoration: 'none' }}>
             <Card className={classes.root}>
                 <CardContent>
                     <Typography className={classes.title} color="textSecondary" gutterBottom>

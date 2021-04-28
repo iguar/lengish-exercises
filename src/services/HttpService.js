@@ -1,8 +1,6 @@
 import _ from 'lodash';
 import axios from 'axios';
 import { ApolloClient, InMemoryCache } from '@apollo/client';
-// eslint-disable-next-line import/no-unresolved
-import env from 'react-dotenv';
 
 export class HttpConnectorService {
     constructor() {
