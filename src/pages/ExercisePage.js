@@ -1,13 +1,13 @@
 import React, {
     useState, useContext, useEffect, memo, useCallback, useMemo,
 } from 'react';
+import clsx from 'clsx';
 import reactStringReplace from 'react-string-replace';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
 import {
     Button, makeStyles, Paper, TextField,
 } from '@material-ui/core';
-import Typography from '@material-ui/core/Typography';
 import MobileContext from '../contexts/MobileContext';
 import ExercisesHttpService from '../services/ExercisesHttpService';
 
@@ -41,6 +41,9 @@ const useStyles = makeStyles((theme) => ({
         color: 'green',
         fontWeight: 'bold',
     },
+    invalidAnswer: {
+        backgroundColor: '#f5919178',
+    },
 }));
 
 const ExercisePage = () => {
@@ -58,7 +61,13 @@ const ExercisePage = () => {
         const checkedTasksArray = _.chain(tasks)
             .map((t) => ({
                 ...t,
-                isValid: _.toLower(t.answer) === _.toLower(t.userAnswer),
+                isValid: _.chain(t.answer)
+                    .split('|')
+                    .map(_.toLowerCase)
+                    .value()
+                    .includes(
+                        _.chain(t.userAnswer).toLower().trim().value(),
+                    ),
             }))
             .value();
 
@@ -86,10 +95,17 @@ const ExercisePage = () => {
     }, []);
 
     const addTask = useCallback(({ task }) => {
-        setTasks((currentState) => _.chain(currentState)
-            .filter((t) => t.uuid !== task.uuid)
-            .concat(task)
-            .value());
+        setTasks((currentState) => {
+            const targetTask = _.find(currentState, { uuid: task.uuid });
+
+            return _.chain(currentState)
+                .filter((t) => t.uuid !== task.uuid)
+                .concat({
+                    ...targetTask,
+                    ...task,
+                })
+                .value();
+        });
     }, [setTasks]);
 
     const renderLine = useCallback((line, index) => {
@@ -111,19 +127,27 @@ const ExercisePage = () => {
                         .value();
 
                     if (validTask) {
-                        return <span className={classes.validAnswer}>{validTask.userAnswer}</span>;
+                        return <span
+                            key={uuid}
+                            className={classes.validAnswer}
+                        >
+                            {validTask.userAnswer}
+                        </span>;
                     }
+
+                    const targetTaskAnswer = !_.chain(tasks).find({ uuid }).get('userAnswer').isEmpty()
+                        .value();
 
                     return <TextField
                         classes={{
-                            root: classes.textField,
+                            root: clsx(classes.textField, targetTaskAnswer && classes.invalidAnswer),
                         }}
                         onChange={(e) => onAnswerChange({
                             uuid,
                             value: e.target.value,
                         })}
                         color='secondary'
-                        key={id}
+                        key={uuid}
                     />;
                 }
                 return null;
@@ -139,7 +163,7 @@ const ExercisePage = () => {
         .split('\n')
     // eslint-disable-next-line react/jsx-key
         .map(renderLine)
-        .value(), [exercise, renderLine]);
+        .value(), [exercise?.body, renderLine]);
 
     useEffect(() => {
         ExercisesHttpService.getExercises({
