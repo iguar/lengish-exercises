@@ -60,7 +60,7 @@ const HomePage = (props) => {
             filter: {
                 tags: selectedTags,
             },
-            projection: ['id', 'title', 'tags'],
+            projection: ['_id', 'title', 'tags'],
         }).then((result) => {
             setExercises(result);
         });
@@ -93,7 +93,7 @@ const HomePage = (props) => {
             <div className={classes.exercisesContainer}>
                 {_.map(exercises, (e, index) => <ExerciseCard
                     key={index}
-                    id={e.id}
+                    id={e._id}
                     title={e.title}
                     tags={e.tags}
                 />)}

@@ -49,7 +49,7 @@ const App = () => {
                 <Header/>
 
                 <Switch>
-                    <Route path="/admin/exercise/:id">
+                    <Route path="/admin/exercise/:_id">
                         <ExerciseEditPage/>
                     </Route>
                     {/* If the current URL is /about, this route is rendered
@@ -61,7 +61,7 @@ const App = () => {
                     {/* Note how these two routes are ordered. The more specific
                 path="/contact/:id" comes before path="/contact" so that
                 route will render when viewing an individual contact */}
-                    <Route path="/exercise/:id">
+                    <Route path="/exercise/:_id">
                         <ExercisePage/>
                     </Route>
 

@@ -50,7 +50,7 @@ const ExercisePage = () => {
     const { isMobile } = useContext(MobileContext);
     const classes = useStyles({ isMobile });
 
-    const { id } = useParams();
+    const { _id } = useParams();
 
     const [exercise, setExercise] = useState();
 
@@ -166,13 +166,13 @@ const ExercisePage = () => {
         .value(), [exercise?.body, renderLine]);
 
     useEffect(() => {
-        ExercisesHttpService.getExercises({
-            filter: { id },
+        ExercisesHttpService.getExercise({
+            _id,
             projection: ['title', 'body'],
-        }).then(([result] = []) => {
+        }).then((result) => {
             setExercise(result);
         });
-    }, [id]);
+    }, [_id]);
 
     return (
         <Paper classes={{
